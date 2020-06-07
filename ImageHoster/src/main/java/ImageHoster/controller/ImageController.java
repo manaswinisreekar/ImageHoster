@@ -163,14 +163,15 @@ public class ImageController {
     //Looks for a controller method with request mapping of type '/images'
     @RequestMapping(value = "/deleteImage", method = RequestMethod.DELETE)
     public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId, HttpSession session, Model model) {
-        User user = (User) session.getAttribute("loggeduser");
-        Image deletedImage = imageService.getImage(imageId);
-        String error ="owner has rights to delete the image";
-        model.addAttribute("image", deletedImage);
-        //code to check if the same user is deleting the image is same as the one who uploaded it..
+            Image image = imageService.getImage(imageId);
+            User user = (User) session.getAttribute("loggeduser");
+            //code to check if the same user is deleting the image is same as the one who uploaded it..
         // if not error out
-        if(deletedImage.getUser().getId()!=user.getId()) {
+        if (image.getUser().getId() != user.getId()) {
+            String error ="owner has rights to delete the image";
             model.addAttribute("deleteError", error);
+            model.addAttribute("image", image);
+            model.addAttribute("tags", image.getTags());
             return "images/image";
         }
         imageService.deleteImage(imageId);
