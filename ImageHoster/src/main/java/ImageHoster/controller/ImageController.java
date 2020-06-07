@@ -52,15 +52,16 @@ public class ImageController {
         model.addAttribute("tags", image.getTags());
         return "images/image";
     }*/
-    //Changed the editImage id Function
-       @RequestMapping("/images/{id}/{title}")
-       public String showImage(@PathVariable("id") Integer id, Model model) {
-           Image image = imageService.getImageById(id);
-           model.addAttribute("image", image);
-           model.addAttribute("tags", image.getTags());
-           return "images/image";
-       }
-
+    //Changed the editImage id Function//
+    @RequestMapping("/images/{imageId}/{title}")
+    public String showImage(@PathVariable("title") String title, @PathVariable("imageId") Integer imageId, Model model) {
+        Image image = imageService.getImageById(imageId);
+        if ( null != image ) {
+            model.addAttribute("image", image);
+            model.addAttribute("tags", image.getTags());
+        }
+        return "images/image";
+    }
     //This controller method is called when the request pattern is of type 'images/upload'
     //The method returns 'images/upload.html' file
     @RequestMapping("/images/upload")
@@ -99,23 +100,26 @@ public class ImageController {
 
     //The method first needs to convert the list of all the tags to a string containing all the tags separated by a comma and then add this string in a Model type object
     //This string is then displayed by 'edit.html' file as previous tags of an image
+
     @RequestMapping(value = "/editImage")
-    public String editImage(@RequestParam("imageId") Integer imageId, Model model,HttpSession session) {
+    public String editImage(@RequestParam("imageId") Integer imageId, Model model, HttpSession session) {
         Image image = imageService.getImage(imageId);
         User user = (User) session.getAttribute("loggeduser");
-        String tags = convertTagsToString(image.getTags());
-        String error="Only the owner of the image can edit the image";
-        model.addAttribute("image", image);
-        model.addAttribute("tags", tags);
-        //changed the code to check if the user is trying to edit the image is same as the one who uploaded the image..
-        // or else throw the error
-        if(image.getUser().getId()!=user.getId()) {
+
+        // code to check if the image is uploaded by this user
+        if (image.getUser().getId() != user.getId()) {
+            String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
+            model.addAttribute("image", image);
+            model.addAttribute("tags", image.getTags());
             return "images/image";
         }
+
+        String tags = convertTagsToString(image.getTags());
+        model.addAttribute("image", image);
+        model.addAttribute("tags", tags);
         return "images/edit";
     }
-
 
 
 
