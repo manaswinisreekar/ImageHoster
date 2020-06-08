@@ -30,7 +30,6 @@ public class Image {
     @Column(columnDefinition = "TEXT")
     private String imageFile;
 
-
     @Column(name = "description")
     private String description;
 
@@ -51,6 +50,8 @@ public class Image {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Tag> tags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public Image() {
     }
@@ -69,8 +70,6 @@ public class Image {
         this.description = description;
         this.date = date;
     }
-
-
 
     public Integer getId() {
         return id;
@@ -128,7 +127,11 @@ public class Image {
         this.tags = tags;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
 
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
-
-
