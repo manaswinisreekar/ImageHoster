@@ -170,11 +170,11 @@ public class ImageController {
             //code to check if the same user is deleting the image is same as the one who uploaded it..
         // if not error out
         if (image.getUser().getId() != user.getId()) {
-            String error ="owner has rights to delete the image";
+            String error ="Only the owner of the image can delete the image";
             model.addAttribute("deleteError", error);
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
-            model.addAttribute("comments", image.getComments());
+            //model.addAttribute("comments", image.getComments());
             return "images/image";
         }
         imageService.deleteImage(imageId);
